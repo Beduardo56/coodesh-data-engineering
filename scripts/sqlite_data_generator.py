@@ -49,10 +49,14 @@ CREATE TABLE IF NOT EXISTS vendas (
 
 sales_data = generate_sales_data(500)
 # Inserindo dados.
-cursor.executemany("""INSERT INTO vendas (id, data_venda, id_produto, id_cliente, quantidade, valor_unitario, valor_total, id_vendedor, regiao)
-                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                   """, sales_data)
-conn.commit()
+try:
+    cursor.executemany("""INSERT INTO vendas (id, data_venda, id_produto, id_cliente, quantidade, valor_unitario, valor_total, id_vendedor, regiao)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, sales_data)
+    conn.commit()
 
-print('Dados inseridos com sucesso.')
-cursor.close()
+    print('Dados inseridos com sucesso.')
+    cursor.close()
+except sqlite3.IntegrityError:
+    print("já temos dados na tabela")
+    cursor.close()

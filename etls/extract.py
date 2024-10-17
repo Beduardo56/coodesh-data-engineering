@@ -4,13 +4,14 @@ import pandas as pd
 import logging
 from sqlite3 import DatabaseError
 
-def extract_vendas(begin: datetime = None, end: datetime = None) -> pd.DataFrame:
+def extract_vendas(begin: datetime = None, end: datetime = None, conn=None) -> pd.DataFrame:
     """Função responsável por extrair os dados do banco de dados,
     podemos passar o período que queremos extrair os dados.
 
     Args:
         begin (datetime, optional): Data de início do filtro. Defaults to None.
         end (datetime, optional): Data de fim do filtro. Defaults to None.
+        conn (optional): conexão com o bando de dados;
 
     Returns:
         pd.DataFrame: Dados de vendas extraidos do banco
@@ -23,7 +24,9 @@ def extract_vendas(begin: datetime = None, end: datetime = None) -> pd.DataFrame
     except AttributeError:
         logging.error("Não foi passado begin ou end no formato certo")
         raise Exception("Begin ou end passados erroneamente")
-    conn = sqlite3.connect("coodesh-teste.db")
+    # Caso eu não passe a conecção, eu pego a conexão do teste
+    if conn is None:
+        conn = sqlite3.connect("coodesh-teste.db")
     try:
         # Caso onde passamos o inicio e fim.
         if begin is not None and end is not None:
